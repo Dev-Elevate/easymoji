@@ -1,0 +1,21 @@
+{
+  "manifest_version": 3,
+  "name": "add-emoji-chrome-extension",
+  "version": "1.0",
+  "description": "",
+  "action": {
+    "default_popup": "index.html"
+  },
+  "permissions": ["scripting", "tabs", "activeTab", "webNavigation"],
+  "host_permissions": ["https://*/*", "http://*/*"],
+  "icons": {},
+  "content_scripts": [
+    {
+      "js": ["content.js"],
+      "matches": ["https://*/*"]
+    }
+  ],
+  "background": {
+    "service_worker": "background.js"
+  }
+}
