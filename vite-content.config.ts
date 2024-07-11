@@ -6,7 +6,7 @@ export default defineConfig({
     emptyOutDir: false, // So that popup build files don't get deleted
     rollupOptions: {
       input: {
-        content: "./content_script/content-script.ts", // Entry Point
+        content: "./content_script/content-script.tsx", // Entry Point
       },
       output: {
         entryFileNames: "[name].js",
