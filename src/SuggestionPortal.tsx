@@ -98,11 +98,19 @@ const SuggestionPortal: React.FC<SuggestionPortalProps> = ({
 
   useEffect(() => {
     const portalNode = portalRef.current;
-    document.body.appendChild(portalNode);
+    if (suggestions.length > 0) {
+      document.body.appendChild(portalNode);
+    } else {
+      if (document.body.contains(portalNode)) {
+        document.body.removeChild(portalNode);
+      }
+    }
     return () => {
-      document.body.removeChild(portalNode);
+      if (document.body.contains(portalNode)) {
+        document.body.removeChild(portalNode);
+      }
     };
-  }, []);
+  }, [suggestions.length]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -126,19 +134,20 @@ const SuggestionPortal: React.FC<SuggestionPortalProps> = ({
       portalRef.current.style.top = `${rect.bottom + window.scrollY}px`;
       portalRef.current.style.left = `${rect.left + window.scrollX}px`;
       portalRef.current.style.zIndex = "1000";
-      portalRef.current.style.background = "rgb(243 244 246)";
-      portalRef.current.style.border = "1px solid #ccc";
+      portalRef.current.style.background = "rgb(9, 9, 11)";
+      portalRef.current.style.border = "1px solid rgb(39, 39, 42)";
       portalRef.current.style.borderRadius = "10px";
       portalRef.current.style.maxHeight = "200px";
       portalRef.current.style.maxWidth = "300px";
       portalRef.current.style.overflowY = "auto";
       portalRef.current.style.scrollbarWidth = "none";
+      portalRef.current.style.backdropFilter = "blur(5px)";
+      // portalRef.current.style.webkitBackdropFilter = "blur(5px)"; // For Safari support
     }
   }, [activeElement]);
 
-  return ReactDOM.createPortal(
-    suggestions.length > 0 && (
-      <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
+  return suggestions.length > 0
+    ? ReactDOM.createPortal(
         <div>
           {suggestions.map((emoji, index) => (
             <div
@@ -150,17 +159,36 @@ const SuggestionPortal: React.FC<SuggestionPortalProps> = ({
                 padding: "5px",
                 display: "inline-block",
                 outline: "none",
+                transition: "background-color 0.2s ease-in-out",
               }}
               onClick={() => onSelect(emoji)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  onSelect(emoji);
+                }
+              }}
+              onFocus={(e) =>
+                ((e.target as HTMLDivElement).style.backgroundColor =
+                  "rgba(0, 0, 0, 0.1)")
+              }
+              onBlur={(e) =>
+                ((e.target as HTMLDivElement).style.backgroundColor = "")
+              }
+              onMouseEnter={(e) =>
+                ((e.target as HTMLDivElement).style.backgroundColor =
+                  "rgba(0, 0, 0, 0.1)")
+              }
+              onMouseLeave={(e) =>
+                ((e.target as HTMLDivElement).style.backgroundColor = "")
+              }
             >
               {emoji.symbol}
             </div>
           ))}
-        </div>
-      </ThemeProvider>
-    ),
-    portalRef.current
-  );
+        </div>,
+        portalRef.current
+      )
+    : null;
 };
 
 export default SuggestionPortal;
