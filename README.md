@@ -1,6 +1,6 @@
-# add-emoji-chrome-extension
-# React + TypeScript + Vite
+# Easymoji - A chrome extension to add emojis easily to web pages
 
+This project uses React + TypeScript + Vite
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
 Currently, two official plugins are available:
